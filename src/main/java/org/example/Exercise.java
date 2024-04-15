@@ -6,13 +6,21 @@ public class Exercise {
     private int reps;
     private double weight;
     private int duration; //for cardio and flexibility exercises
+    private ExerciseType type;
 
-    public Exercise() {
+    public Exercise(String name, ExerciseType type, int sets, int reps, double weight) {
+        this.name = name;
+        this.sets = sets;
+        this.reps = reps;
+        this.weight = weight;
+        this.type = type;
     }
 
-    //add exercise
-    //delete exercise
-
+    public Exercise(String name,ExerciseType type,  int duration) {
+        this.name = name;
+        this.duration = duration;
+        this.type = type;
+    }
 
     public String getName() {
         return name;
