@@ -7,29 +7,76 @@ import java.util.Scanner;
 
 public class Program {
     private String name;
-    private Map<String, List<Exercise>> workout; //key is for workout day
+    private Map<DaysOfWeek, List<Exercise>> workout; //key is for workout day
 
     //add exercise
     //delete exercise
 
-    public void addExercise(String day, String name) {
+    public void addExercise() {
         ExerciseType type = getExerciseType();
+        DaysOfWeek day = getDay();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Name of exercise: ");
+        String name = scanner.nextLine();
+
+        switch (type) {
+            case CARDIO: //no break statement which means it will go to flexibility
+            case FLEXIBILITY:
+                addCardioExercise(day, name, type);
+                break;
+            case STRENGTH:
+                addStrengthExercise(day, name, type);
+                break;
+
+        }
+        scanner.close();
 
     }
 
     //add cardio/flexibility exercise
-    private void addExercise(String day, String name, ExerciseType type, int duration) {
-        List<Exercise> exercises = new ArrayList<>();
+    private void addCardioExercise(DaysOfWeek day, String name, ExerciseType type) {
+        int duration = getIntegerInput("Enter duration in seconds");
+
+        List<Exercise> exercises = workout.getOrDefault(day, new ArrayList<>());
+        exercises.add(new Exercise(name, type, duration));
+
+        workout.put(day,exercises);
+
+        System.out.println("Exercise '" + name + "' added to " + day + ".");
+
     }
 
     //add strength exercise
-    private void addExercise(String day, String name, ExerciseType type, int set, int reps, int weight) {
-        List<Exercise> exercises = new ArrayList<>();
+    private void addStrengthExercise(DaysOfWeek day, String name, ExerciseType type) {
+        int sets = getIntegerInput("Number of sets: ");
+        int reps = getIntegerInput("Number of reps: ");
+        double weight = getDoubleInput("Weight in lbs: ");
+
+        List<Exercise> exercises = workout.getOrDefault(day, new ArrayList<>());
+        exercises.add(new Exercise(name, type, sets, reps, weight));
+
+        workout.put(day,exercises);
+
+        System.out.println("Exercise '" + name + "' added to " + day + ".");
     }
 
 
     public void deleteExercise(String day, String name) {
 
+    }
+
+    private DaysOfWeek getDay() {
+        Scanner scanner = new Scanner(System.in);
+        while(true) {
+            try {
+                System.out.print("Enter the day of the week (MONDAY, TUESDAY, etc.): ");
+                String input = scanner.nextLine().toUpperCase();
+                return DaysOfWeek.valueOf(input);
+            }catch (IllegalArgumentException e) {
+                System.out.println("Invalid date. Please choose from MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, " +
+                        "SATURDAY, or SUNDAY.");
+            }
+        }
     }
 
     //exceptions
@@ -50,7 +97,7 @@ public class Program {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             try{
-                System.out.println(message);
+                System.out.print(message);
                 return Integer.parseInt(scanner.nextLine());
             }catch (NumberFormatException e) {
                 System.out.println("Invalid input. Enter a number.");
@@ -62,7 +109,7 @@ public class Program {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             try{
-                System.out.println(message);
+                System.out.print(message);
                 return Double.parseDouble(scanner.nextLine());
             }catch (NumberFormatException e) {
                 System.out.println("Invalid input. Enter a double.");
